@@ -12,8 +12,15 @@ export function registerAssignmentTools(server: McpServer, api: GradescopeAPI): 
     },
     async (args) => {
       try {
-        const html = await api.fetchPage(`/courses/${args.course_id}/assignments`);
-        const assignments = parseAssignmentList(html);
+        // Instructor view lives at /courses/ID/assignments; student view lives
+        // on the course dashboard /courses/ID. Try the instructor URL first,
+        // then fall back to the dashboard for student-enrolled courses.
+        let html = await api.fetchPage(`/courses/${args.course_id}/assignments`);
+        let assignments = parseAssignmentList(html);
+        if (assignments.length === 0) {
+          html = await api.fetchPage(`/courses/${args.course_id}`);
+          assignments = parseAssignmentList(html);
+        }
         if (assignments.length === 0) {
           return {
             content: [
@@ -50,8 +57,12 @@ export function registerAssignmentTools(server: McpServer, api: GradescopeAPI): 
         );
 
         // Get basic info from the assignment list parser first
-        const listHtml = await api.fetchPage(`/courses/${args.course_id}/assignments`);
-        const allAssignments = parseAssignmentList(listHtml);
+        let listHtml = await api.fetchPage(`/courses/${args.course_id}/assignments`);
+        let allAssignments = parseAssignmentList(listHtml);
+        if (allAssignments.length === 0) {
+          listHtml = await api.fetchPage(`/courses/${args.course_id}`);
+          allAssignments = parseAssignmentList(listHtml);
+        }
         const baseInfo = allAssignments.find((a) => a.id === args.assignment_id);
 
         // Get detailed info from the assignment page

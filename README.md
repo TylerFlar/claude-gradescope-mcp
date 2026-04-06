@@ -36,7 +36,7 @@ Add to your Claude Code MCP settings (`~/.claude.json` or `.mcp.json`):
 |------|-------------|
 | `list-courses` | List all enrolled courses with role |
 | `get-course` | Get course details |
-| `list-assignments` | List assignments with due dates and status |
+| `list-assignments` | List assignments with due dates and status (works for both instructor and student courses) |
 | `get-assignment` | Get assignment details, instructions, rubric outline |
 | `list-submissions` | List submissions (instructor: all students; student: own) |
 | `get-submission` | Get submission detail with rubric feedback and comments |
